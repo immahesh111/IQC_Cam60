@@ -73,7 +73,7 @@ elif app_mode == "Mobile Inspection":
                     unsafe_allow_html=True
                 )
                 st.success("Mobile Screen is: " + prediction)
-            elif prediction == 'NG (Scratch)':
+            elif prediction == 'NG_Crack' or prediction == 'NG_Dent' or prediction == 'NG_Dust' or prediction == 'NG_Fingerprint' or prediction == 'NG_Scratch':
                 st.markdown(
                     """
                     <style>
