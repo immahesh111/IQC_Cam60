@@ -88,14 +88,13 @@ elif app_mode == "Mobile Inspection":
 
 
 # Assuming model_prediction is defined elsewhere
-
 if app_mode == "Live Inspection":
     st.header('Live Mobile Screen Inspection')
-    
+
     run = st.checkbox('Run')
-    
+
     FRAME_WINDOW = st.image([])  # Placeholder for displaying frames
-    
+
     # Assign a key to the camera input to manage its session state
     camera_input = st.camera_input("Take a picture", key='camera_input')
 
@@ -104,32 +103,33 @@ if app_mode == "Live Inspection":
             # Convert image data to OpenCV format
             file_bytes = np.asarray(bytearray(camera_input.read()), dtype=np.uint8)
             frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-            
+
             # Perform prediction
             result_index = model_prediction(frame)
-            
+
             class_names = ['Good', 'NG_Crack','NG_Dent','NG_Dust','NG_Fingerprint','NG_Scratch']
             prediction = class_names[result_index]
-            
+
             # Determine text color based on prediction
-            color = (0, 255, 0) if prediction in ['Cam1_OK', 'Cam2_OK'] else (0, 0, 255)
-            
+            color = (0, 255, 0) if prediction == 'Good' else (0, 0, 255)  # Green for 'Good', Red for others
+
             # Annotate the frame with prediction
-            cv2.putText(frame, f'Prediction: {prediction}', (10, 30), 
+            cv2.putText(frame, f'Prediction: {prediction}', (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
-            
+
             # Convert frame to RGB for display in Streamlit
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             FRAME_WINDOW.image(frame_rgb, channels='RGB')
-            
+
             # Clear the camera input from session state to reset it
             if 'camera_input' in st.session_state:
                 del st.session_state.camera_input
-            
+
             # Clear all cached data and resources to ensure fresh predictions
             st.cache_data.clear()
             st.cache_resource.clear()
         else:
             st.warning("Please enable your camera and take a picture.")
+
 
 
